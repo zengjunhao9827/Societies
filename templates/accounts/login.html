@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}登录{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="card p-4 shadow-sm">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-4">账户登录</h2>
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">登录</button>
+                </div>
+            </form>
+
+            <p class="text-center mt-3 mb-0">
+                还没有账户？<a href="{% url 'accounts:register' %}">立即注册</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
