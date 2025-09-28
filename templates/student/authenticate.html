@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}学生主页 - 智慧校园论坛{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- 1. 左侧栏：个人信息与AI助手 (3/12 宽度) -->
+    <div class="col-lg-3 col-md-4 mb-4">
+        
+        <!-- 个人信息卡片 -->
+        <div class="card shadow-sm mb-4 border-primary">
+            <div class="card-header bg-primary text-white text-center">
+                <i class="fas fa-user-circle me-2"></i> 个人中心
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ user.username }}</h5>
+                <p class="card-text mb-1"><strong>角色:</strong> <span class="badge bg-secondary">{{ user.get_role_display }}</span></p>
+                <p class="card-text mb-1"><strong>认证状态:</strong> 
+                    {% if user.is_verified %}
+                        <span class="badge bg-success">已认证 <i class="fas fa-check-circle"></i></span>
+                    {% else %}
+                        <span class="badge bg-danger">未认证 <i class="fas fa-times-circle"></i></span>
+                    {% endif %}
+                </p>
+                
+                <p class="card-text mb-1"><strong>所属社团:</strong> 
+                    {% if user.has_club %}
+                        <span class="badge bg-info text-dark">{{ user.club_name }}</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">暂无社团</span>
+                    {% endif %}
+                </p>
+                
+                <!-- 认证按钮 -->
+                {% if not user.is_verified %}
+                    <a href="{% url 'student:authenticate' %}" class="btn btn-sm btn-outline-primary w-100 mt-2">进行学生认证</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- AI 助手入口 -->
+        <div class="card shadow-sm">
+            <div class="card-body text-center bg-light">
+                <i class="fas fa-brain fa-3x text-info mb-2"></i>
+                <h5 class="card-title">AI 智能助手</h5>
+                <p class="card-text text-muted small">帖子摘要、智能问答、内容推荐</p>
+                <a href="{{ ai_assistant_url }}" class="btn btn-info w-100 text-white">立即体验</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 中央栏：热门帖子与最新活动 (6/12 宽度) -->
+    <div class="col-lg-6 col-md-8 mb-4">
+        <!-- 热门论坛帖子 -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-danger text-white">
+                <i class="fas fa-fire me-2"></i> 热门论坛帖子
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for post in hot_posts %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="#" class="text-decoration-none text-dark fw-bold">{{ post.title }}</a>
+                    <div class="small text-muted">
+                        <i class="fas fa-heart text-danger me-1"></i> {{ post.likes }}
+                        <i class="fas fa-eye text-primary ms-2 me-1"></i> {{ post.views }}
+                    </div>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-center text-muted">暂无热门帖子，快去论坛发帖吧！</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- 最新社团活动 -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <i class="fas fa-calendar-alt me-2"></i> 最新社团活动
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for activity in hot_activities %}
+                <li class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1 fw-bold">{{ activity.title }}</h6>
+                        <small class="text-muted">{{ activity.date|date:"Y-m-d" }}</small>
+                    </div>
+                    <p class="mb-1 small text-truncate">社团：{{ activity.club.name }} | 地点：{{ activity.location }}</p>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-center text-muted">近期暂无活动，敬请期待。</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- 3. 右侧栏：社团入口与申请 (3/12 宽度) -->
+    <div class="col-lg-3 col-md-12">
+        <!-- 交流圈入口 -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-secondary text-white">
+                <i class="fas fa-comments me-2"></i> 社团交流圈
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for club in all_clubs %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="#" class="text-decoration-none">{{ club.name }}</a>
+                    <span class="badge bg-primary rounded-pill">进入</span>
+                </li>
+                {% endfor %}
+                <li class="list-group-item text-center">
+                    <a href="#" class="btn btn-sm btn-link text-decoration-none">查看更多社团...</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 社团申请/创建 -->
+        <div class="card shadow-sm">
+            <div class="card-body text-center bg-light">
+                <h5 class="card-title">社团管理中心</h5>
+                <a href="#" class="btn btn-warning w-100 mb-2">申请加入社团</a>
+                <a href="#" class="btn btn-outline-success w-100">创建新社团</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 引入 Font Awesome 图标库 -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+{% endblock %}
